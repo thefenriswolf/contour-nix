@@ -1,3 +1,6 @@
+# after cool-retro-term
+# contour = libsForQt5.callPackage ../applications/misc/contour { };
+
 { stdenv, fetchFromGitHub, mkDerivation, qt5, qtbase, cmake, extra-cmake-modules
 , libGL, fontconfig, freetype, harfbuzz, tbb, pcre-cpp, pkgconfig, boost
 , kwindowsystem, fmt, catch2 }:
@@ -13,6 +16,8 @@ mkDerivation rec {
     rev = "2089d98a92e06661fab72650388c0bb88be457fe";
     sha256 = "1crdqyvi91iz4wgyqbgzv2hpbqw9a5i2cqsx9yiavn2vm3jygkkl";
   };
+
+  # TODO: package needs 'libyaml-cpp' but build complains about it being a function
 
   buildInputs = [
     qt5.qtbase
@@ -32,7 +37,7 @@ mkDerivation rec {
   nativeBuildInputs = [ cmake extra-cmake-modules pkgconfig ];
 
   cmakeFlags = [
-    "-DCONTOUR_BLUR_PLATFORM_KWIN=OFF"
+    "-DCONTOUR_BLUR_PLATFORM_KWIN=ON"
     "-DCONTOUR_COVERAGE=OFF"
     "-DCONTOUR_PERF_STATS=OFF"
     "-DLIBTERMINAL_EXECUTION_PAR=ON"
@@ -43,12 +48,12 @@ mkDerivation rec {
     "-DYAML_CPP_BUILD_CONTRIB=OFF"
     "-DBUILD_SHARED_LIBS=ON"
     "-DYAML_CPP_BUILD_TESTS=OFF"
-    "-DCMAKE_INSTALL_PREFIX=$out"
     "-DCMAKE_BUILD_TYPE=Debug"
-    "-DCMAKE_CXX_FLAGS=-Wall -O2"
   ];
 
-  #  installFlags = [ "INSTALL_ROOT=$(out)" ];
+  installFlags = [ "INSTALL_ROOT=$(out)" ];
+
+  hardeningEnable = [ "pie" "fortify" ];
 
   enableParallelBuilding = true;
 
