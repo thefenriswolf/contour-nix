@@ -1,27 +1,27 @@
 # after cool-retro-term
 # contour = libsForQt5.callPackage ../applications/misc/contour { };
 
-{ stdenv, fetchFromGitHub, mkDerivation, qt5, qtbase, cmake, extra-cmake-modules
-, libGL, fontconfig, freetype, harfbuzz, tbb, pcre-cpp, pkgconfig, boost
-, kwindowsystem, fmt, catch2 }:
+#{ stdenv, fetchFromGitHub, mkDerivation, qt5, qtbase, cmake, extra-cmake-modules
+#, libGL, fontconfig, freetype, harfbuzz, tbb, pcre-cpp, pkgconfig, boost
+#, kwindowsystem, fmt, catch2 }:
 
-mkDerivation rec {
-  version = "30072020";
+with import <nixpkgs> { };
+
+stdenv.mkDerivation rec {
+  version = "19122020";
   pname = "contour";
 
   src = fetchFromGitHub {
     owner = "christianparpart";
     repo = "contour";
     fetchSubmodules = true;
-    rev = "2089d98a92e06661fab72650388c0bb88be457fe";
-    sha256 = "1crdqyvi91iz4wgyqbgzv2hpbqw9a5i2cqsx9yiavn2vm3jygkkl";
+    rev = "57adae889420810cae4f9cedc69b1ac51db9c956";
+    sha256 = "0slzsldylakswgkigja8yh3cx6hwssrmagg7w25jbvx5rbqqymwv";
   };
-
-  # TODO: package needs 'libyaml-cpp' but build complains about it being a function
 
   buildInputs = [
     qt5.qtbase
-    kwindowsystem
+    libsForQt5.kwindowsystem
     harfbuzz
     freetype
     tbb
@@ -31,27 +31,27 @@ mkDerivation rec {
     libGL
     fmt
     catch2
-    kwindowsystem
+    libyamlcpp
   ];
 
-  nativeBuildInputs = [ cmake extra-cmake-modules pkgconfig ];
+  nativeBuildInputs = [ cmake extra-cmake-modules ninja pkgconfig ];
 
-  cmakeFlags = [
-    "-DCONTOUR_BLUR_PLATFORM_KWIN=ON"
-    "-DCONTOUR_COVERAGE=OFF"
-    "-DCONTOUR_PERF_STATS=OFF"
-    "-DLIBTERMINAL_EXECUTION_PAR=ON"
-    "-DLIBTERMINAL_LOG_TRACE=ON"
-    "-DLIBTERMINAL_LOG_RAW=ON"
-    "-DOpenGL_GL_PREFERENCE=LEGACY"
-    "-DYAML_CPP_BUILD_TOOLS=OFF"
-    "-DYAML_CPP_BUILD_CONTRIB=OFF"
-    "-DBUILD_SHARED_LIBS=ON"
-    "-DYAML_CPP_BUILD_TESTS=OFF"
-    "-DCMAKE_BUILD_TYPE=Debug"
-  ];
+  #  cmakeFlags = [
+  #    "-DCONTOUR_BLUR_PLATFORM_KWIN=ON"
+  #    "-DCONTOUR_COVERAGE=OFF"
+  #    "-DCONTOUR_PERF_STATS=OFF"
+  #    "-DLIBTERMINAL_EXECUTION_PAR=ON"
+  #    "-DLIBTERMINAL_LOG_TRACE=ON"
+  #    "-DLIBTERMINAL_LOG_RAW=ON"
+  #    "-DOpenGL_GL_PREFERENCE=LEGACY"
+  #    "-DYAML_CPP_BUILD_TOOLS=OFF"
+  #    "-DYAML_CPP_BUILD_CONTRIB=OFF"
+  #    "-DBUILD_SHARED_LIBS=ON"
+  #    "-DYAML_CPP_BUILD_TESTS=OFF"
+  #    "-DCMAKE_BUILD_TYPE=Debug"
+  #  ];
 
-  installFlags = [ "INSTALL_ROOT=$(out)" ];
+  # installFlags = [ "INSTALL_ROOT=$(out)" ];
 
   hardeningEnable = [ "pie" "fortify" ];
 
